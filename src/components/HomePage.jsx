@@ -24,6 +24,8 @@ import trophyImgUrl from "../assets/home-trophy.png";
 
 import { ProductsCard } from "./ProductsCard";
 
+import APIURL from "../apiUrls/apiUrlConstants";
+
 export function HomePage() {
   const [partnerList, setPartnerList] = useState([]);
   const [newsletter, setNewsletter] = useState(false);
@@ -31,9 +33,9 @@ export function HomePage() {
   const [email, setEmail] = useState("");
   const getTodoList = async () => {
     try {
-      const res = await axios.get(
-        `https://stage-api.shyftclub.com/v1.0/partner/retrieve_list?page=${0}`
-      );
+      const res = await axios.get(APIURL.GET_PARTNER_LIST);
+      // `https://stage-api.shyftclub.com/v1.0/partner/retrieve_list?page=${0}`
+      // );
       setPartnerList(res.data.data);
     } catch (err) {
       console.log(err);
