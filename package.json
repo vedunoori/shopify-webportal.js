@@ -11,7 +11,6 @@
     "serve": "cross-env NODE_ENV=production node server/index.js",
     "start": "npm run shopify",
     "client": "node dist/client",
-    "shopify": "shopify app serve",
     "test": "vitest --reporter=verbose"
   },
   "type": "module",
