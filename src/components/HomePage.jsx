@@ -25,24 +25,22 @@ import trophyImgUrl from "../assets/home-trophy.png";
 import { ProductsCard } from "./ProductsCard";
 
 export function HomePage() {
-  const [todoList, setTodoLisr] = useState([]);
+  const [partnerList, setPartnerList] = useState([]);
   const [newsletter, setNewsletter] = useState(false);
   const [files, setFiles] = useState([]);
   const [email, setEmail] = useState("");
   const getTodoList = async () => {
     try {
-      const res = await axios.get(`https://reqres.in/api/users?page=${1}`);
-      // .then((res) => { console.log('res', res) })
-      // .catch((error) => {
-      //     console.error(error);
-      // })'
-      setTodoLisr(res.data.data);
+      const res = await axios.get(
+        `https://stage-api.shyftclub.com/v1.0/partner/retrieve_list?page=${0}`
+      );
+      setPartnerList(res.data.data);
     } catch (err) {
       console.log(err);
     }
   };
 
-  console.log("todoList", todoList);
+  console.log("partnerList", partnerList);
 
   useEffect(() => {
     const fetchData = () => {
