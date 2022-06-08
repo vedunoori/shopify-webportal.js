@@ -33,7 +33,9 @@ export function HomePage() {
   const [email, setEmail] = useState("");
   const getTodoList = async () => {
     try {
-      const res = await axios.get(APIURL.GET_PARTNER_LIST);
+      const res = await axios.get(
+        `https://stage-api.shyftclub.com/v1.0/partner/retrieve_list?page=${0}`
+      );
       // `https://stage-api.shyftclub.com/v1.0/partner/retrieve_list?page=${0}`
       // );
       setPartnerList(res.data.data);
