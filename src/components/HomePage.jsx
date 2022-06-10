@@ -23,34 +23,21 @@ import { useEffect, useState, useCallback } from "react";
 import trophyImgUrl from "../assets/home-trophy.png";
 
 import { ProductsCard } from "./ProductsCard";
-
-import APIURL from "../apiUrls/apiUrlConstants";
+import { getpartnerList } from "../apiUrls/BulkBookingApis/BookingListApis";
 
 export function HomePage() {
   const [partnerList, setPartnerList] = useState([]);
   const [newsletter, setNewsletter] = useState(false);
   const [files, setFiles] = useState([]);
   const [email, setEmail] = useState("");
-  const getTodoList = async () => {
-    try {
-      const res = await axios.get(
-        `https://stage-api.shyftclub.com/v1.0/partner/retrieve_list?page=${0}`
-      );
-      // `https://stage-api.shyftclub.com/v1.0/partner/retrieve_list?page=${0}`
-      // );
-      setPartnerList(res.data.data);
-    } catch (err) {
-      console.log(err);
-    }
-  };
 
   console.log("partnerList", partnerList);
 
   useEffect(() => {
-    const fetchData = () => {
-      getTodoList();
-    };
-    fetchData();
+    (async () => {
+      const data = await getpartnerList();
+      setPartnerList(data);
+    })();
   }, []);
 
   const handleChange = useCallback((value) => setEmail(value), []);
