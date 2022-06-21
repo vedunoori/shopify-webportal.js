@@ -35,8 +35,8 @@ export function HomePage() {
 
   useEffect(() => {
     (async () => {
-      const data = await getpartnerList();
-      setPartnerList(data);
+      // const data = await getpartnerList();
+      // setPartnerList(data);
     })();
   }, []);
 

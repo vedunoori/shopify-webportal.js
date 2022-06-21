@@ -7,7 +7,7 @@ import "dotenv/config";
 
 import applyAuthMiddleware from "./middleware/auth.js";
 import verifyRequest from "./middleware/verify-request.js";
-
+import { Order } from "@shopify/shopify-api/dist/rest-resources/2022-04/index.js";
 const USE_ONLINE_TOKENS = true;
 const TOP_LEVEL_OAUTH_COOKIE = "shopify_top_level_oauth";
 
@@ -35,12 +35,13 @@ Shopify.Webhooks.Registry.addHandler("APP_UNINSTALLED", {
   },
 });
 
+// console.log("testing 38")
 // export for test use only
+const app = express();
 export async function createServer(
   root = process.cwd(),
   isProd = process.env.NODE_ENV === "production"
 ) {
-  const app = express();
   app.set("top-level-oauth-cookie", TOP_LEVEL_OAUTH_COOKIE);
   app.set("active-shopify-shops", ACTIVE_SHOPIFY_SHOPS);
   app.set("use-online-tokens", USE_ONLINE_TOKENS);
@@ -61,14 +62,30 @@ export async function createServer(
     }
   });
 
-  app.get("/products-count", verifyRequest(app), async (req, res) => {
-    const session = await Shopify.Utils.loadCurrentSession(req, res, true);
-    const { Product } = await import(
-      `@shopify/shopify-api/dist/rest-resources/${Shopify.Context.API_VERSION}/index.js`
-    );
+  // app.get("/products-count", verifyRequest(app), async (req, res) => {
+  //   const session = await Shopify.Utils.loadCurrentSession(req, res, true);
+  //   const { Product } = await import(
+  //     `@shopify/shopify-api/dist/rest-resources/${Shopify.Context.API_VERSION}/index.js`
+  //   );
+  //   const countData = await Product.count({ session });
+  //   console.log(countData)
+  //   res.status(200).send(countData);
+  // });
 
-    const countData = await Product.count({ session });
-    res.status(200).send(countData);
+  app.get("/products", verifyRequest(app), async (req, res) => {
+    // console.log("163")
+    const session = await Shopify.Utils.loadCurrentSession(req, res);
+    console.log("tet", session);
+    // Create a new client for the specified shop.
+    const client = new Shopify.Clients.Rest(session.shop, session.accessToken);
+    // Use `client.get` to request the specified Shopify REST API endpoint, in this case `products`.
+    const products = await client.get({
+      path: "orders",
+      query: { status: "any" },
+    });
+    res.status(200).send(products);
+    console.log("products", products);
+    return products;
   });
 
   app.post("/graphql", verifyRequest(app), async (req, res) => {
@@ -154,3 +171,29 @@ export async function createServer(
 if (!isTest) {
   createServer().then(({ app }) => app.listen(PORT));
 }
+
+// export async function testOrderList() {
+//   // const app = express();
+//   console.log("161")
+//   app.get("/products", verifyRequest(app), async (req, res) => {
+//     console.log("163")
+//     const session = await Shopify.Utils.loadCurrentSession(req, res);
+//     console.log('tet', session)
+//     // Create a new client for the specified shop.
+//     const client = new Shopify.Clients.Rest(session.shop, session.accessToken);
+//     // Use `client.get` to request the specified Shopify REST API endpoint, in this case `products`.
+//     const products = await client.get({
+//       path: 'orders',
+//       query: { 'status': 'any' }
+
+//     });
+//     console.log('products', products);
+//     return products
+
+//   });
+// }
+
+// testOrderList();
+// if (!isTest) {
+
+// }

@@ -6,11 +6,18 @@ import {
   DisplayText,
   TextStyle,
   Button,
+  Page,
 } from "@shopify/polaris";
-import { Toast, useAppBridge } from "@shopify/app-bridge-react";
+
+// import { ResourcePicker, Toast, useAppBridge } from "@shopify/app-bridge-react";
+import { ResourcePicker, useAppBridge } from "@shopify/app-bridge-react";
+
+// import Router from "koa-router";
+
 import { gql, useMutation } from "@apollo/client";
 
 import { userLoggedInFetch } from "../App";
+// import axios from "axios";
 
 const PRODUCTS_QUERY = gql`
   mutation populateProduct($input: ProductInput!) {
@@ -23,6 +30,9 @@ const PRODUCTS_QUERY = gql`
 `;
 
 export function ProductsCard() {
+  const [isOpen, setIsOpen] = useState(false);
+  const [productsList, setProductsList] = useState([]);
+
   const [populateProduct, { loading }] = useMutation(PRODUCTS_QUERY);
   const [productCount, setProductCount] = useState(0);
   const [hasResults, setHasResults] = useState(false);
@@ -30,201 +40,66 @@ export function ProductsCard() {
   const app = useAppBridge();
   const fetch = userLoggedInFetch(app);
   const updateProductCount = useCallback(async () => {
-    const { count } = await fetch("/products-count").then((res) => res.json());
+    const count = await fetch("/products").then((res) => res.json());
+    console.log("count", count);
     setProductCount(count);
   }, []);
 
   useEffect(() => {
     updateProductCount();
-  }, [updateProductCount]);
+  }, []);
 
-  const toastMarkup = hasResults && (
-    <Toast
-      content="5 products created!"
-      onDismiss={() => setHasResults(false)}
-    />
-  );
+  // const toastMarkup = hasResults && (
+  //   <Toast
+  //     content="5 products created!"
+  //     onDismiss={() => setHasResults(false)}
+  //   />
+  // );
+
+  console.log(isOpen);
+  const handeleSelectProd = (payload) => {
+    setIsOpen(false);
+    console.log(payload.selection);
+    setProductsList(payload.selection);
+  };
+
+  useEffect(() => {
+    (async () => {
+      // const date = await testOrderList()
+      // console.log(date)
+      // try{
+      // const res = await  axios.get('https://shyftae.myshopify.com/admin/api/2022-04/orders.json?status=any')
+      // console.log(res)
+      // }catch(e){
+      // }
+    })();
+  }, []);
 
   return (
     <>
-      {toastMarkup}
+      {/* {toastMarkup} */}
       <Card title="Product Counter" sectioned>
-        <TextContainer spacing="loose">
-          <p>
-            Sample products are created with a default title and price. You can
-            remove them at any time.
-          </p>
-          <Heading element="h4">
-            TOTAL PRODUCTS
-            <DisplayText size="medium">
-              <TextStyle variation="strong">{productCount}</TextStyle>
-            </DisplayText>
-          </Heading>
-          <Button
-            primary
-            loading={loading}
-            onClick={() => {
-              Promise.all(
-                Array.from({ length: 5 }).map(() =>
-                  populateProduct({
-                    variables: {
-                      input: {
-                        title: randomTitle(),
-                      },
-                    },
-                  })
-                )
-              ).then(() => {
-                updateProductCount();
-                setHasResults(true);
-              });
-            }}
-          >
-            Populate 5 products
-          </Button>
-        </TextContainer>
+        <Page
+          title="Product Selector"
+          primaryAction={{
+            content: "Select product",
+            onAction: () => setIsOpen(true),
+          }}
+        >
+          <ResourcePicker
+            resourceType="Product"
+            open={isOpen}
+            onCancel={() => setIsOpen(false)}
+            onSelection={handeleSelectProd}
+          />
+        </Page>
+        {productsList.map((item, index) => (
+          <div key={index}>
+            <div>handle:{item.handle}</div>
+            <div>vendor:{item.vendor}</div>
+          </div>
+        ))}
       </Card>
     </>
   );
 }
-
-function randomTitle() {
-  const adjective = ADJECTIVES[Math.floor(Math.random() * ADJECTIVES.length)];
-  const noun = NOUNS[Math.floor(Math.random() * NOUNS.length)];
-
-  return `${adjective} ${noun}`;
-}
-
-const ADJECTIVES = [
-  "autumn",
-  "hidden",
-  "bitter",
-  "misty",
-  "silent",
-  "empty",
-  "dry",
-  "dark",
-  "summer",
-  "icy",
-  "delicate",
-  "quiet",
-  "white",
-  "cool",
-  "spring",
-  "winter",
-  "patient",
-  "twilight",
-  "dawn",
-  "crimson",
-  "wispy",
-  "weathered",
-  "blue",
-  "billowing",
-  "broken",
-  "cold",
-  "damp",
-  "falling",
-  "frosty",
-  "green",
-  "long",
-  "late",
-  "lingering",
-  "bold",
-  "little",
-  "morning",
-  "muddy",
-  "old",
-  "red",
-  "rough",
-  "still",
-  "small",
-  "sparkling",
-  "throbbing",
-  "shy",
-  "wandering",
-  "withered",
-  "wild",
-  "black",
-  "young",
-  "holy",
-  "solitary",
-  "fragrant",
-  "aged",
-  "snowy",
-  "proud",
-  "floral",
-  "restless",
-  "divine",
-  "polished",
-  "ancient",
-  "purple",
-  "lively",
-  "nameless",
-];
-
-const NOUNS = [
-  "waterfall",
-  "river",
-  "breeze",
-  "moon",
-  "rain",
-  "wind",
-  "sea",
-  "morning",
-  "snow",
-  "lake",
-  "sunset",
-  "pine",
-  "shadow",
-  "leaf",
-  "dawn",
-  "glitter",
-  "forest",
-  "hill",
-  "cloud",
-  "meadow",
-  "sun",
-  "glade",
-  "bird",
-  "brook",
-  "butterfly",
-  "bush",
-  "dew",
-  "dust",
-  "field",
-  "fire",
-  "flower",
-  "firefly",
-  "feather",
-  "grass",
-  "haze",
-  "mountain",
-  "night",
-  "pond",
-  "darkness",
-  "snowflake",
-  "silence",
-  "sound",
-  "sky",
-  "shape",
-  "surf",
-  "thunder",
-  "violet",
-  "water",
-  "wildflower",
-  "wave",
-  "water",
-  "resonance",
-  "sun",
-  "wood",
-  "dream",
-  "cherry",
-  "tree",
-  "fog",
-  "frost",
-  "voice",
-  "paper",
-  "frog",
-  "smoke",
-  "star",
-];

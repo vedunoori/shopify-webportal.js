@@ -15,6 +15,7 @@ import translations from "@shopify/polaris/locales/en.json";
 import "@shopify/polaris/build/esm/styles.css";
 
 import { HomePage } from "./components/HomePage";
+import { ProductsCard } from "./components/ProductsCard";
 
 export default function App() {
   return (
@@ -28,6 +29,7 @@ export default function App() {
       >
         <MyProvider>
           <HomePage />
+          <ProductsCard />
         </MyProvider>
       </AppBridgeProvider>
     </PolarisProvider>
@@ -36,7 +38,7 @@ export default function App() {
 
 function MyProvider({ children }) {
   const app = useAppBridge();
-
+  console.log("app", app);
   const client = new ApolloClient({
     cache: new InMemoryCache(),
     link: new HttpLink({
@@ -52,7 +54,9 @@ export function userLoggedInFetch(app) {
   const fetchFunction = authenticatedFetch(app);
 
   return async (uri, options) => {
+    console.log(uri, options);
     const response = await fetchFunction(uri, options);
+    console.log(response);
 
     if (
       response.headers.get("X-Shopify-API-Request-Failure-Reauthorize") === "1"
