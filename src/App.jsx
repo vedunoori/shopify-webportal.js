@@ -16,6 +16,7 @@ import "@shopify/polaris/build/esm/styles.css";
 
 import { HomePage } from "./components/HomePage";
 import { ProductsCard } from "./components/ProductsCard";
+import CreateOrders from "./components/CreateOrders";
 
 export default function App() {
   return (
@@ -28,8 +29,9 @@ export default function App() {
         }}
       >
         <MyProvider>
-          <HomePage />
-          <ProductsCard />
+          {/* <HomePage /> */}
+          {/* <ProductsCard /> */}
+          <CreateOrders />
         </MyProvider>
       </AppBridgeProvider>
     </PolarisProvider>

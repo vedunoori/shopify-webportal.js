@@ -40,23 +40,15 @@ export function ProductsCard() {
   const app = useAppBridge();
   const fetch = userLoggedInFetch(app);
   const updateProductCount = useCallback(async () => {
-    const count = await fetch("/products").then((res) => res.json());
-    console.log("count", count);
-    setProductCount(count);
+    const orders = await fetch("/orders").then((res) => res.json());
+    console.log("orders", orders);
+    setProductCount(orders);
   }, []);
 
   useEffect(() => {
     updateProductCount();
   }, []);
 
-  // const toastMarkup = hasResults && (
-  //   <Toast
-  //     content="5 products created!"
-  //     onDismiss={() => setHasResults(false)}
-  //   />
-  // );
-
-  console.log(isOpen);
   const handeleSelectProd = (payload) => {
     setIsOpen(false);
     console.log(payload.selection);

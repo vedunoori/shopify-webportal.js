@@ -72,19 +72,19 @@ export async function createServer(
   //   res.status(200).send(countData);
   // });
 
-  app.get("/products", verifyRequest(app), async (req, res) => {
+  app.get("/orders", verifyRequest(app), async (req, res) => {
     // console.log("163")
     const session = await Shopify.Utils.loadCurrentSession(req, res);
     console.log("tet", session);
     // Create a new client for the specified shop.
     const client = new Shopify.Clients.Rest(session.shop, session.accessToken);
-    // Use `client.get` to request the specified Shopify REST API endpoint, in this case `products`.
+    // Use `client.get` to request the specified Shopify REST API endpoint, in this case `orders`.
     const products = await client.get({
       path: "orders",
       query: { status: "any" },
     });
     res.status(200).send(products);
-    console.log("products", products);
+    // console.log("products", products);
     return products;
   });
 
