@@ -104,7 +104,6 @@ function CreateOrders() {
       bkref: "ew",
       name: item.shipping_address.name,
       add: "Abu Dhabi Mall - Abu Dhabi - United Arab Emirates", //item.shipping_address.address1
-      addtl: "test",
       cnam: "Abu Dhabi",
       email: item.contact_email, // "covidwave@gmail.com",
       ph: "98668451455", //item.shipping_address.phone,
